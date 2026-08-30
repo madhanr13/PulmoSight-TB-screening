@@ -5,51 +5,55 @@
     <section class="page-header">
       <div>
         <div class="eyebrow"><span class="eyebrow-line"></span> ANALYTICS</div>
-        <h1>System dashboard</h1>
+        <h1>Review dashboard</h1>
       </div>
-      <button class="button primary-button small-button" type="button">Export summary</button>
+      <a class="button primary-button small-button" href="/api/export-report">Export summary</a>
     </section>
 
     <section class="stats-grid">
       <article class="stat-card accent">
-        <span>Screening accuracy</span>
-        <strong>93.4%</strong>
-        <small>GA-optimized decision boundary</small>
+        <span>Total reviews</span>
+        <strong>{{ total }}</strong>
+        <small>Cases reviewed this session</small>
       </article>
       <article class="stat-card">
-        <span>Case sensitivity</span>
-        <strong>91.8%</strong>
-        <small>Research validation</small>
+        <span>Positive findings</span>
+        <strong>{{ positives }}</strong>
+        <small>Cases requiring attention</small>
       </article>
       <article class="stat-card">
-        <span>Inference latency</span>
-        <strong>0.42s</strong>
-        <small>Per X-ray image</small>
+        <span>Clear findings</span>
+        <strong>{{ negatives }}</strong>
+        <small>Cases without TB indicators</small>
       </article>
       <article class="stat-card">
-        <span>Queue volume</span>
-        <strong>128</strong>
-        <small>Images processed today</small>
+        <span>Latest case</span>
+        <strong>{{ latest.status|capitalize if latest else 'None' }}</strong>
+        <small>{{ latest.filename if latest else 'No cases reviewed yet' }}</small>
       </article>
     </section>
 
     <section class="two-column-layout">
       <article class="panel-card">
-        <div class="panel-title-row"><h3>Detection summary</h3><span class="status-pill success">Stable</span></div>
-        <div class="chart-bars">
-          <div class="bar-group"><span class="bar-label">Normal</span><div class="bar"><i style="height:68%"></i></div></div>
-          <div class="bar-group"><span class="bar-label">TB risk</span><div class="bar"><i style="height:82%"></i></div></div>
-          <div class="bar-group"><span class="bar-label">Confidence</span><div class="bar"><i style="height:76%"></i></div></div>
-        </div>
+        <div class="panel-title-row"><h3>Recent cases</h3><span class="status-pill success">Live</span></div>
+        <ul class="list-checks">
+          {% if results %}
+            {% for item in results %}
+              <li>{{ item.filename }} · {{ item.status|capitalize }} · {{ item.timestamp }}</li>
+            {% endfor %}
+          {% else %}
+            <li>No cases reviewed yet.</li>
+          {% endif %}
+        </ul>
       </article>
 
       <article class="panel-card">
-        <div class="panel-title-row"><h3>Pipeline status</h3><span class="status-pill info">Online</span></div>
+        <div class="panel-title-row"><h3>Next actions</h3><span class="status-pill info">Open</span></div>
         <ul class="list-checks">
-          <li>Image upload validation passed.</li>
-          <li>Normalization and resize pipeline active.</li>
-          <li>GA threshold recalibration enabled.</li>
-          <li>Model output in research mode only.</li>
+          <li>Review new radiographs as they arrive.</li>
+          <li>Open high-priority findings for clinician review.</li>
+          <li>Export a session summary when complete.</li>
+          <li>Keep final decisions with qualified specialists.</li>
         </ul>
       </article>
     </section>

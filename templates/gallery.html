@@ -21,6 +21,13 @@
           <div class="mini-figure"></div>
         </article>
       {% endfor %}
+      {% if not dataset %}
+        <article class="panel-card empty-state">
+          <h3>No reviewed cases yet</h3>
+          <p>Completed radiograph reviews will appear here for quick reference.</p>
+          <a class="button primary-button small-button" href="/">Start a review</a>
+        </article>
+      {% endif %}
     </section>
   </main>
 {% endblock %}

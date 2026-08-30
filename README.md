@@ -1,17 +1,16 @@
 # PulmoSight
 
-PulmoSight is a Flask-based tuberculosis lung radiograph screening interface built around a two-module research pipeline:
+PulmoSight is a secure tuberculosis lung radiograph review workspace:
 
-- `preprocessing.py` validates image uploads and prepares radiographs for model input.
-- `ga_mobilenet.py` applies a MobileNet-inspired inference pipeline and tunes the classification threshold with a genetic algorithm.
-- The web app includes a multi-page dashboard, case gallery, admin login, history, and report export views.
+- Flask provides the protected API and image review service.
+- The optional `frontend/` app provides a Vite + React client with the same teal/coral visual system.
+- The web app includes authenticated case review, registration, dashboard, history, and report export views.
 
 ## Features
 
 - Chest radiograph upload and validation
-- MobileNet-style preprocessing pipeline
-- GA-optimized decision threshold
-- Modern multi-page interface with a consistent teal/coral research aesthetic
+- Vite + React frontend with responsive auth and review screens
+- Modern interface with a consistent teal/coral research aesthetic
 - Result history tracking in memory
 - JSON export for session summaries
 - Admin access screen for demonstration use
@@ -27,6 +26,12 @@ PulmoSight/
 ├── README.md
 ├── .gitignore
 ├── .env.example
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.js
+│   └── src/
+│       ├── main.jsx
+│       └── styles.css
 ├── static/
 │   ├── app.js
 │   └── styles.css
@@ -39,7 +44,8 @@ PulmoSight/
 │   ├── gallery.html
 │   ├── history.html
 │   ├── reports.html
-│   └── login.html
+│   ├── login.html
+│   └── register.html
 └── Data/
 ```
 
@@ -53,6 +59,24 @@ py app.py
 ```
 
 Open http://127.0.0.1:5000
+
+## React frontend
+
+Run the Flask API first, then in a second terminal:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://127.0.0.1:5173. Vite proxies `/api` requests to Flask on port 5000.
+
+The React app also supports a production build:
+
+```powershell
+npm run build
+```
 
 ## Environment configuration
 

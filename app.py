@@ -16,7 +16,55 @@ app.config["ADMIN_PASSWORD"] = os.getenv(
     "PULMOSIGHT_ADMIN_PASSWORD", "admin123")
 classifier = GAMobileNetClassifier()
 
+USERS = {
+    app.config["ADMIN_EMAIL"].lower(): {
+        "password": app.config["ADMIN_PASSWORD"],
+        "role": "admin",
+    }
+}
 RESULTS = []
+
+
+def _is_public_route(path):
+    public_paths = {
+        "/login",
+        "/register",
+        "/logout",
+        "/api/login",
+        "/api/register",
+        "/api/auth/status",
+        "/api/logout",
+    }
+    return path in public_paths or path.startswith("/static/")
+
+
+@app.before_request
+def enforce_authentication():
+    if session.get("user") or session.get("is_admin"):
+        return None
+
+    if _is_public_route(request.path):
+        return None
+
+    if request.path.startswith("/api/"):
+        return jsonify({"ok": False, "error": "Authentication required."}), 401
+
+    return redirect(url_for("login"))
+
+
+def _authenticate_credentials(email, password):
+    normalized_email = (email or "").strip().lower()
+    normalized_password = password or ""
+    user = USERS.get(normalized_email)
+    return bool(user and user["password"] == normalized_password)
+
+
+def _current_user():
+    if session.get("user"):
+        return session["user"]
+    if session.get("is_admin"):
+        return {"email": app.config["ADMIN_EMAIL"], "role": "admin"}
+    return None
 
 
 def _save_result(result_data):
@@ -31,39 +79,48 @@ def _save_result(result_data):
 
 @app.get("/")
 def home():
-    return render_template("home.html", runtime_mode=classifier.runtime_mode, is_admin=session.get("is_admin", False))
+    if not _current_user():
+        return redirect(url_for("login"))
+    return render_template("home.html", runtime_mode=classifier.runtime_mode, is_admin=True, user=_current_user())
 
 
 @app.get("/dashboard")
 def dashboard():
-    return render_template("dashboard.html", runtime_mode=classifier.runtime_mode, is_admin=session.get("is_admin", False), results=RESULTS[:5])
+    total = len(RESULTS)
+    positives = sum(1 for item in RESULTS if item.get("status") == "positive")
+    negatives = sum(1 for item in RESULTS if item.get("status") == "negative")
+    return render_template(
+        "dashboard.html",
+        runtime_mode=classifier.runtime_mode,
+        is_admin=True,
+        user=_current_user(),
+        results=RESULTS[:5],
+        total=total,
+        positives=positives,
+        negatives=negatives,
+        latest=RESULTS[0] if RESULTS else None,
+    )
 
 
 @app.get("/methodology")
 def methodology():
-    return render_template("methodology.html", runtime_mode=classifier.runtime_mode, is_admin=session.get("is_admin", False))
+    return render_template("methodology.html", runtime_mode=classifier.runtime_mode, is_admin=True, user=_current_user())
 
 
 @app.get("/about")
 def about():
-    return render_template("about.html", runtime_mode=classifier.runtime_mode, is_admin=session.get("is_admin", False))
+    return render_template("about.html", runtime_mode=classifier.runtime_mode, is_admin=True, user=_current_user())
 
 
 @app.get("/gallery")
 def gallery():
-    dataset = [
-        {"name": "TB-01", "count": 184, "type": "Positive", "accent": "positive"},
-        {"name": "TB-02", "count": 213, "type": "Borderline", "accent": "warning"},
-        {"name": "TB-03", "count": 322, "type": "Normal", "accent": "neutral"},
-        {"name": "TB-04", "count": 475,
-            "type": "High confidence", "accent": "positive"},
-    ]
-    return render_template("gallery.html", runtime_mode=classifier.runtime_mode, is_admin=session.get("is_admin", False), dataset=dataset)
+    dataset = [item for item in RESULTS if item.get("filename")]
+    return render_template("gallery.html", runtime_mode=classifier.runtime_mode, is_admin=True, user=_current_user(), dataset=dataset)
 
 
 @app.get("/history")
 def history():
-    return render_template("history.html", runtime_mode=classifier.runtime_mode, is_admin=session.get("is_admin", False), results=RESULTS)
+    return render_template("history.html", runtime_mode=classifier.runtime_mode, is_admin=True, user=_current_user(), results=RESULTS)
 
 
 @app.get("/reports")
@@ -73,38 +130,98 @@ def reports():
     return render_template(
         "reports.html",
         runtime_mode=classifier.runtime_mode,
-        is_admin=session.get("is_admin", False),
+        is_admin=True,
+        user=_current_user(),
         total=len(RESULTS),
         positives=positives,
         negatives=negatives,
-        summary={
-            "avg_score": round(sum(item.get("score", 0) for item in RESULTS) / len(RESULTS), 1) if RESULTS else 0,
-            "last_run": RESULTS[0].get("timestamp") if RESULTS else "No runs yet",
-        },
     )
 
 
 @app.get("/login")
 def login():
-    if session.get("is_admin"):
-        return redirect(url_for("dashboard"))
+    if _current_user():
+        return redirect(url_for("home"))
     return render_template("login.html", runtime_mode=classifier.runtime_mode, is_admin=False)
+
+
+@app.get("/register")
+def register():
+    if _current_user():
+        return redirect(url_for("home"))
+    return render_template("register.html", runtime_mode=classifier.runtime_mode, is_admin=False)
+
+
+@app.get("/api/auth/status")
+def auth_status():
+    user = _current_user()
+    return jsonify({
+        "authenticated": bool(user),
+        "user": user,
+    })
+
+
+@app.post("/api/register")
+def api_register():
+    payload = request.get_json(silent=True) or {}
+    email = str(payload.get("email", "")).strip().lower()
+    password = str(payload.get("password", ""))
+    if not email or not password:
+        return jsonify({"ok": False, "error": "Email and password are required."}), 400
+    if len(password) < 6:
+        return jsonify({"ok": False, "error": "Password must be at least 6 characters."}), 400
+    if email in USERS:
+        return jsonify({"ok": False, "error": "An account with this email already exists."}), 409
+    USERS[email] = {"password": password, "role": "user"}
+    session["user"] = {"email": email, "role": "user"}
+    return jsonify({"ok": True, "redirect": url_for("home"), "user": session["user"]})
+
+
+@app.post("/api/login")
+def api_login():
+    payload = request.get_json(silent=True) or {}
+    email = str(payload.get("email", request.form.get("email", ""))).strip()
+    password = str(payload.get("password", request.form.get("password", "")))
+
+    if _authenticate_credentials(email, password):
+        user = USERS[email.strip().lower()]
+        session["user"] = {"email": email.strip().lower(),
+                           "role": user["role"]}
+        return jsonify({
+            "ok": True,
+            "message": "Login successful.",
+            "redirect": url_for("home"),
+            "user": session["user"],
+        })
+
+    return jsonify({
+        "ok": False,
+        "error": "Invalid admin credentials.",
+    }), 401
 
 
 @app.post("/login")
 def login_submit():
-    email = request.form.get("email", "").strip().lower()
+    email = request.form.get("email", "")
     password = request.form.get("password", "")
-    if email == app.config["ADMIN_EMAIL"].lower() and password == app.config["ADMIN_PASSWORD"]:
-        session["is_admin"] = True
+    if _authenticate_credentials(email, password):
+        user = USERS[email.strip().lower()]
+        session["user"] = {"email": email.strip().lower(),
+                           "role": user["role"]}
         return redirect(url_for("dashboard"))
     return render_template("login.html", runtime_mode=classifier.runtime_mode, is_admin=False, error="Invalid admin credentials."), 401
 
 
 @app.get("/logout")
 def logout():
-    session.pop("is_admin", None)
-    return redirect(url_for("home"))
+    session.clear()
+    return redirect(url_for("login"))
+
+
+@app.post("/api/logout")
+def api_logout():
+    session.clear()
+    return jsonify({"ok": True, "redirect": url_for("login")})
 
 
 @app.get("/api/export-report")

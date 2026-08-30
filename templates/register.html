@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | Register{% endblock %}
+{% block content %}
+  <main class="page-main auth-page-shell">
+    <section class="auth-layout register-layout">
+      <div class="auth-visual">
+        <div class="visual-badge">Create account</div>
+        <h1>Join the review workspace.</h1>
+        <p>Set up a secure account to organize case review and keep clinical follow-up easy to manage.</p>
+        <ul class="auth-points">
+          <li>Protected case access</li>
+          <li>Personal activity history</li>
+          <li>Export-ready summaries</li>
+        </ul>
+      </div>
+      <div class="auth-card">
+        <div class="eyebrow"><span class="eyebrow-line"></span> Register</div>
+        <h2>Start your account</h2>
+        <div id="registerMessage" class="error-box hidden" role="alert"></div>
+        <form id="registerForm">
+          <label class="field-group"><span>Email address</span><input id="registerEmail" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+          <label class="field-group"><span>Password</span><input id="registerPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="Minimum 6 characters"></label>
+          <button class="button primary-button auth-button" type="submit">Create account</button>
+        </form>
+        <div class="auth-footer"><span class="footer-rule"></span><small>Already registered? <a href="/login">Sign in</a></small></div>
+      </div>
+    </section>
+  </main>
+{% endblock %}
+{% block script %}
+<script>
+  document.getElementById('registerForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const message = document.getElementById('registerMessage');
+    const button = event.currentTarget.querySelector('button');
+    button.disabled = true;
+    try {
+      const response = await fetch('/api/register', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email: document.getElementById('registerEmail').value, password: document.getElementById('registerPassword').value }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Registration failed.');
+      window.location.href = data.redirect || '/';
+    } catch (error) {
+      message.textContent = error.message;
+      message.classList.remove('hidden');
+    } finally { button.disabled = false; }
+  });
+</script>
+{% endblock %}

@@ -3,15 +3,14 @@
 {% block content %}
   <main>
     <section class="intro">
-      <div class="eyebrow"><span class="eyebrow-line"></span> RESEARCH WORKBENCH</div>
-      <h1>Read the signal<br><em>behind the image.</em></h1>
-      <p class="intro-copy">A focused screening workspace for chest radiographs, combining image-aware preprocessing with a genetically calibrated MobileNet classifier.</p>
-      <div class="module-strip"><span><b>01</b> PREPROCESS</span><i></i><span><b>02</b> CLASSIFY</span><i></i><span><b>GA</b> OPTIMIZE</span></div>
+      <div class="eyebrow"><span class="eyebrow-line"></span> CASE REVIEW</div>
+      <h1>Make each case<br><em>more actionable.</em></h1>
+      <p class="intro-copy">A streamlined workspace for chest radiographs, designed to support fast triage and clearer clinical decision-making.</p>
     </section>
 
     <section class="workspace" aria-label="TB radiograph analysis workspace">
       <div class="upload-panel" id="dropZone">
-        <div class="panel-kicker">INPUT RADIOGRAPH <span>JPG · PNG · WEBP / 12 MB</span></div>
+        <div class="panel-kicker">UPLOAD CASE <span>JPG · PNG · WEBP / 12 MB</span></div>
         <div class="upload-body" id="uploadPrompt">
           <div class="scan-icon"><span></span><span></span><span></span></div>
           <h2>Drop a radiograph here</h2>
@@ -28,13 +27,13 @@
       </div>
 
       <div class="result-panel">
-        <div class="panel-kicker">MODEL OUTPUT <span id="modelMode">WAITING FOR INPUT</span></div>
+        <div class="panel-kicker">SCREENING RESULT <span id="modelMode">WAITING FOR INPUT</span></div>
         <div class="result-empty" id="resultEmpty"><div class="empty-ring">◌</div><p>Upload a radiograph<br>to generate a reading.</p></div>
         <div class="result-content hidden" id="resultContent">
           <div class="result-heading"><span class="result-badge" id="resultBadge">ANALYSIS</span><span class="result-time" id="resultTime">JUST NOW</span></div>
           <h2 id="prediction">No TB indicators detected</h2>
           <div class="score-row"><div class="score-number" id="scoreNumber">--<small>%</small></div><div><span class="muted-label">MODEL CONFIDENCE</span><div class="confidence-track"><span id="confidenceBar"></span></div><strong id="confidenceText">--%</strong></div></div>
-          <div class="result-details"><div><span>GA THRESHOLD</span><strong id="thresholdText">--%</strong></div><div><span>PIPELINE</span><strong>224 × 224 RGB</strong></div></div>
+            <div class="result-details"><div><span>THRESHOLD</span><strong id="thresholdText">--%</strong></div><div><span>FORMAT</span><strong>224 × 224 RGB</strong></div></div>
           <div class="disclaimer" id="disclaimer"></div>
         </div>
         <button class="button analyze-button" id="analyzeButton" type="button" disabled>Analyze radiograph <span>→</span></button>
@@ -43,19 +42,19 @@
 
     <section class="info-grid">
       <article class="info-card">
-        <span class="card-kicker">AI PIPELINE</span>
-        <h3>Preprocessing</h3>
-        <p>Metadata validation, RGB normalization, and size balancing for consistent radiograph input.</p>
+        <span class="card-kicker">CASE QUEUE</span>
+        <h3>Keep reviews moving</h3>
+        <p>Move from upload to a clear next step without losing case context.</p>
       </article>
       <article class="info-card">
-        <span class="card-kicker">GA OPTIMIZATION</span>
-        <h3>Adaptive thresholding</h3>
-        <p>Genetic search tunes the final decision boundary for better class separation on TB patterns.</p>
+        <span class="card-kicker">TEAM READY</span>
+        <h3>Share the signal</h3>
+        <p>Keep case outcomes easy to understand during handoff and follow-up.</p>
       </article>
       <article class="info-card">
-        <span class="card-kicker">RESEARCH</span>
-        <h3>Clinical review reminder</h3>
-        <p>The interface is designed for decision support, not autonomous diagnosis.</p>
+        <span class="card-kicker">CLINICAL CARE</span>
+        <h3>Human judgment first</h3>
+        <p>Use every result as decision support alongside qualified clinical review.</p>
       </article>
     </section>
 

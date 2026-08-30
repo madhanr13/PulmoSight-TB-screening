@@ -1,24 +1,88 @@
 {% extends 'base.html' %}
 {% block title %}PulmoSight | Admin Login{% endblock %}
 {% block content %}
-  <main class="page-main auth-wrap">
-    <section class="auth-card">
-      <div class="eyebrow"><span class="eyebrow-line"></span> RESTRICTED ACCESS</div>
-      <h1>Admin login</h1>
-      {% if error %}
-        <div class="error-box">{{ error }}</div>
-      {% endif %}
-      <form method="post" action="/login">
-        <label>
-          <span>Email</span>
-          <input type="email" name="email" placeholder="admin@pulmosight.ai" required>
-        </label>
-        <label>
-          <span>Password</span>
-          <input type="password" name="password" placeholder="admin123" required>
-        </label>
-        <button type="submit" class="button primary-button auth-button">Sign in</button>
-      </form>
+  <main class="page-main auth-page-shell">
+    <section class="auth-layout">
+      <div class="auth-visual">
+        <div class="visual-badge">Restricted Access</div>
+        <h1>Secure diagnostics portal</h1>
+        <p>Access the PulmoSight evidence dashboard for case reviews, session history, and export-ready reporting.</p>
+        <ul class="auth-points">
+          <li>Case review workspace</li>
+          <li>Protected session history</li>
+          <li>Exportable research summaries</li>
+        </ul>
+      </div>
+
+      <div class="auth-card">
+        <div class="eyebrow"><span class="eyebrow-line"></span> Admin Login</div>
+        <h2>Welcome back</h2>
+        {% if error %}
+          <div class="error-box" role="alert">{{ error }}</div>
+        {% endif %}
+        <div id="loginMessage" class="error-box hidden" role="alert"></div>
+
+        <form id="loginForm" method="post" action="/login">
+          <label class="field-group">
+            <span>Email address</span>
+            <input type="email" name="email" id="emailInput" placeholder="admin@pulmosight.ai" autocomplete="email" required>
+          </label>
+          <label class="field-group">
+            <span>Password</span>
+            <input type="password" name="password" id="passwordInput" placeholder="Enter password" autocomplete="current-password" required>
+          </label>
+          <button type="submit" class="button primary-button auth-button">
+            <span>Sign in</span>
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <span class="footer-rule"></span>
+          <small>Need an account? <a href="/register">Create one</a></small>
+        </div>
+      </div>
     </section>
   </main>
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('loginMessage');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+      const submitButton = form.querySelector('button[type="submit"]');
+
+      message.classList.add('hidden');
+      message.textContent = '';
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span>Signing in...</span>';
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.ok) {
+          throw new Error(data.error || 'Login failed.');
+        }
+
+        window.location.href = data.redirect || '/dashboard';
+      } catch (error) {
+        message.textContent = error.message;
+        message.classList.remove('hidden');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<span>Sign in</span>';
+      }
+    });
+  });
+</script>
 {% endblock %}

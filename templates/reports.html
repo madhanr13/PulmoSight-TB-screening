@@ -27,9 +27,9 @@
         <small>Non-suspect cases</small>
       </article>
       <article class="stat-card">
-        <span>Average score</span>
-        <strong>{{ summary.avg_score }}%</strong>
-        <small>Last run: {{ summary.last_run }}</small>
+        <span>Report status</span>
+        <strong>{{ 'Ready' if total else 'Empty' }}</strong>
+        <small>{{ 'Export available' if total else 'Review a case to create a report' }}</small>
       </article>
     </section>
   </main>
