@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | About{% endblock %}
+{% block content %}
+  <main class="page-main">
+    <section class="page-header narrow">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> ABOUT THE PROJECT</div>
+        <h1>Built for TB screening research</h1>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <article class="panel-card">
+        <h3>Objective</h3>
+        <p>The PulmoSight project explores how chest radiograph screening can be accelerated through preprocessing and deep learning classification in a compact research workflow.</p>
+      </article>
+      <article class="panel-card">
+        <h3>Architecture</h3>
+        <p>The application combines a robust data ingestion layer with a MobileNet-based classifier and a GA-driven threshold optimization component.</p>
+      </article>
+      <article class="panel-card">
+        <h3>Limitations</h3>
+        <p>This interface is a demonstration and decision-support prototype. It is not a replacement for diagnostic imaging interpretation by qualified clinicians.</p>
+      </article>
+    </section>
+  </main>
+{% endblock %}

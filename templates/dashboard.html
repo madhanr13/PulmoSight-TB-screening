@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | Dashboard{% endblock %}
+{% block content %}
+  <main class="page-main">
+    <section class="page-header">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> ANALYTICS</div>
+        <h1>System dashboard</h1>
+      </div>
+      <button class="button primary-button small-button" type="button">Export summary</button>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card accent">
+        <span>Screening accuracy</span>
+        <strong>93.4%</strong>
+        <small>GA-optimized decision boundary</small>
+      </article>
+      <article class="stat-card">
+        <span>Case sensitivity</span>
+        <strong>91.8%</strong>
+        <small>Research validation</small>
+      </article>
+      <article class="stat-card">
+        <span>Inference latency</span>
+        <strong>0.42s</strong>
+        <small>Per X-ray image</small>
+      </article>
+      <article class="stat-card">
+        <span>Queue volume</span>
+        <strong>128</strong>
+        <small>Images processed today</small>
+      </article>
+    </section>
+
+    <section class="two-column-layout">
+      <article class="panel-card">
+        <div class="panel-title-row"><h3>Detection summary</h3><span class="status-pill success">Stable</span></div>
+        <div class="chart-bars">
+          <div class="bar-group"><span class="bar-label">Normal</span><div class="bar"><i style="height:68%"></i></div></div>
+          <div class="bar-group"><span class="bar-label">TB risk</span><div class="bar"><i style="height:82%"></i></div></div>
+          <div class="bar-group"><span class="bar-label">Confidence</span><div class="bar"><i style="height:76%"></i></div></div>
+        </div>
+      </article>
+
+      <article class="panel-card">
+        <div class="panel-title-row"><h3>Pipeline status</h3><span class="status-pill info">Online</span></div>
+        <ul class="list-checks">
+          <li>Image upload validation passed.</li>
+          <li>Normalization and resize pipeline active.</li>
+          <li>GA threshold recalibration enabled.</li>
+          <li>Model output in research mode only.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | Admin Login{% endblock %}
+{% block content %}
+  <main class="page-main auth-wrap">
+    <section class="auth-card">
+      <div class="eyebrow"><span class="eyebrow-line"></span> RESTRICTED ACCESS</div>
+      <h1>Admin login</h1>
+      {% if error %}
+        <div class="error-box">{{ error }}</div>
+      {% endif %}
+      <form method="post" action="/login">
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" placeholder="admin@pulmosight.ai" required>
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" placeholder="admin123" required>
+        </label>
+        <button type="submit" class="button primary-button auth-button">Sign in</button>
+      </form>
+    </section>
+  </main>
+{% endblock %}

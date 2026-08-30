@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | Methodology{% endblock %}
+{% block content %}
+  <main class="page-main">
+    <section class="page-header narrow">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> METHODOLOGY</div>
+        <h1>Two-stage research flow</h1>
+      </div>
+    </section>
+
+    <section class="method-grid">
+      <article class="method-card">
+        <div class="method-step">01</div>
+        <h3>Preprocessing module</h3>
+        <p>Radiographs are validated, converted to RGB, resized to 224 x 224, and normalized into the format required for MobileNet-compatible inference.</p>
+      </article>
+      <article class="method-card">
+        <div class="method-step">02</div>
+        <h3>GA-optimized MobileNet</h3>
+        <p>A genetic algorithm tunes the classification threshold to improve discrimination between normal and TB-suspect lung patterns.</p>
+      </article>
+      <article class="method-card">
+        <div class="method-step">03</div>
+        <h3>Clinical interpretation layer</h3>
+        <p>Scores and confidence values are presented with a clear disclaimer to reinforce research-only usage and physician review.</p>
+      </article>
+    </section>
+  </main>
+{% endblock %}

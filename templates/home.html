@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | TB Screening{% endblock %}
+{% block content %}
+  <main>
+    <section class="intro">
+      <div class="eyebrow"><span class="eyebrow-line"></span> RESEARCH WORKBENCH</div>
+      <h1>Read the signal<br><em>behind the image.</em></h1>
+      <p class="intro-copy">A focused screening workspace for chest radiographs, combining image-aware preprocessing with a genetically calibrated MobileNet classifier.</p>
+      <div class="module-strip"><span><b>01</b> PREPROCESS</span><i></i><span><b>02</b> CLASSIFY</span><i></i><span><b>GA</b> OPTIMIZE</span></div>
+    </section>
+
+    <section class="workspace" aria-label="TB radiograph analysis workspace">
+      <div class="upload-panel" id="dropZone">
+        <div class="panel-kicker">INPUT RADIOGRAPH <span>JPG · PNG · WEBP / 12 MB</span></div>
+        <div class="upload-body" id="uploadPrompt">
+          <div class="scan-icon"><span></span><span></span><span></span></div>
+          <h2>Drop a radiograph here</h2>
+          <p>or choose a file from your device</p>
+          <label class="button primary-button" for="fileInput">Choose image <span>↗</span></label>
+          <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+        </div>
+        <div class="preview-wrap hidden" id="previewWrap">
+          <img id="previewImage" alt="Selected chest radiograph preview">
+          <div class="preview-meta"><strong id="fileName">radiograph</strong><span id="fileSize">Ready to analyze</span></div>
+          <button class="text-button" id="clearButton" type="button">Remove</button>
+        </div>
+        <div class="drop-hint">Images are processed in memory and never stored.</div>
+      </div>
+
+      <div class="result-panel">
+        <div class="panel-kicker">MODEL OUTPUT <span id="modelMode">WAITING FOR INPUT</span></div>
+        <div class="result-empty" id="resultEmpty"><div class="empty-ring">◌</div><p>Upload a radiograph<br>to generate a reading.</p></div>
+        <div class="result-content hidden" id="resultContent">
+          <div class="result-heading"><span class="result-badge" id="resultBadge">ANALYSIS</span><span class="result-time" id="resultTime">JUST NOW</span></div>
+          <h2 id="prediction">No TB indicators detected</h2>
+          <div class="score-row"><div class="score-number" id="scoreNumber">--<small>%</small></div><div><span class="muted-label">MODEL CONFIDENCE</span><div class="confidence-track"><span id="confidenceBar"></span></div><strong id="confidenceText">--%</strong></div></div>
+          <div class="result-details"><div><span>GA THRESHOLD</span><strong id="thresholdText">--%</strong></div><div><span>PIPELINE</span><strong>224 × 224 RGB</strong></div></div>
+          <div class="disclaimer" id="disclaimer"></div>
+        </div>
+        <button class="button analyze-button" id="analyzeButton" type="button" disabled>Analyze radiograph <span>→</span></button>
+      </div>
+    </section>
+
+    <section class="info-grid">
+      <article class="info-card">
+        <span class="card-kicker">AI PIPELINE</span>
+        <h3>Preprocessing</h3>
+        <p>Metadata validation, RGB normalization, and size balancing for consistent radiograph input.</p>
+      </article>
+      <article class="info-card">
+        <span class="card-kicker">GA OPTIMIZATION</span>
+        <h3>Adaptive thresholding</h3>
+        <p>Genetic search tunes the final decision boundary for better class separation on TB patterns.</p>
+      </article>
+      <article class="info-card">
+        <span class="card-kicker">RESEARCH</span>
+        <h3>Clinical review reminder</h3>
+        <p>The interface is designed for decision support, not autonomous diagnosis.</p>
+      </article>
+    </section>
+
+    <section class="footer-note"><span>◈</span> Designed for clinical research workflows <span class="footer-rule"></span> Always review results with a qualified clinician</section>
+  </main>
+{% endblock %}
+{% block script %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | Dataset Gallery{% endblock %}
+{% block content %}
+  <main class="page-main">
+    <section class="page-header">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> DATASET</div>
+        <h1>Case gallery</h1>
+      </div>
+      <button class="button primary-button small-button" type="button">Sync data</button>
+    </section>
+
+    <section class="gallery-grid">
+      {% for item in dataset %}
+        <article class="gallery-card {{ item.accent }}">
+          <div class="gallery-top">
+            <span class="gallery-tag">{{ item.type }}</span>
+            <span class="gallery-count">{{ item.count }} cases</span>
+          </div>
+          <h3>{{ item.name }}</h3>
+          <div class="mini-figure"></div>
+        </article>
+      {% endfor %}
+    </section>
+  </main>
+{% endblock %}

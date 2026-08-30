@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | Reports{% endblock %}
+{% block content %}
+  <main class="page-main">
+    <section class="page-header">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> REPORTS</div>
+        <h1>Clinical summary export</h1>
+      </div>
+      <a class="button primary-button small-button" href="/api/export-report">Export JSON</a>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card accent">
+        <span>Total cases</span>
+        <strong>{{ total }}</strong>
+        <small>Screened in session</small>
+      </article>
+      <article class="stat-card">
+        <span>Positive</span>
+        <strong>{{ positives }}</strong>
+        <small>TB-suspect cases</small>
+      </article>
+      <article class="stat-card">
+        <span>Negative</span>
+        <strong>{{ negatives }}</strong>
+        <small>Non-suspect cases</small>
+      </article>
+      <article class="stat-card">
+        <span>Average score</span>
+        <strong>{{ summary.avg_score }}%</strong>
+        <small>Last run: {{ summary.last_run }}</small>
+      </article>
+    </section>
+  </main>
+{% endblock %}

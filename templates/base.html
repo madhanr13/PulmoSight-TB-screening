@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PulmoSight{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <nav class="topbar">
+      <a class="brand" href="/" aria-label="PulmoSight home"><span class="brand-mark">+</span><span>Pulmo<span>Sight</span></span></a>
+      <div class="nav-menu">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+        <a href="/gallery" class="nav-link">Gallery</a>
+        <a href="/methodology" class="nav-link">Method</a>
+        <a href="/history" class="nav-link">History</a>
+        <a href="/reports" class="nav-link">Reports</a>
+      </div>
+      <div class="nav-meta">
+        {% if is_admin %}
+          <a href="/logout" class="nav-cta">Logout</a>
+        {% else %}
+          <a href="/login" class="nav-cta">Admin Login</a>
+        {% endif %}
+        <span class="pulse-dot"></span> Secure local analysis <span class="nav-divider"></span> <span class="mode-label">{{ runtime_mode }}</span>
+      </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+  </div>
+  {% block script %}{% endblock %}
+</body>
+</html>

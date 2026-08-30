@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}PulmoSight | Results History{% endblock %}
+{% block content %}
+  <main class="page-main">
+    <section class="page-header">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> HISTORY</div>
+        <h1>Recent screening results</h1>
+      </div>
+    </section>
+
+    <section class="history-table-wrap">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Timestamp</th>
+            <th>File</th>
+            <th>Prediction</th>
+            <th>Score</th>
+            <th>Confidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if results %}
+            {% for result in results %}
+            <tr>
+              <td>#{{ result.id }}</td>
+              <td>{{ result.timestamp }}</td>
+              <td>{{ result.filename }}</td>
+              <td><span class="status-chip {{ result.status }}">{{ result.status }}</span></td>
+              <td>{{ result.score }}%</td>
+              <td>{{ result.confidence }}%</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="6">No screening results yet.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+  </main>
+{% endblock %}
